@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UTM Builder</title>
+<style>
+  :root { --bg:#f6f8fb; --card:#fff; --ink:#1b1f2a; --muted:#5a6272; --accent:#1f5fa8; --ok:#1d7a46; --warn:#b54708; --line:#d8dee8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12151c; --card:#1b2029; --ink:#e7ebf2; --muted:#9aa3b2; --accent:#6aa5f0; --ok:#5cc98a; --warn:#f0a35e; --line:#2c3340; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  label { display:block; font-weight:600; font-size:.85rem; margin: 10px 0 4px; }
+  input, select { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font: inherit; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+  #out { word-break: break-all; font-family: Consolas, monospace; font-size: .9rem; padding: 10px; background: var(--bg); border-radius: 6px; border:1px dashed var(--line); min-height: 44px; }
+  button { margin-top: 10px; padding: 9px 16px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+  ul#checks { padding-left: 18px; margin: 8px 0 0; }
+  .ok { color: var(--ok); } .warn { color: var(--warn); }
+  table { width:100%; border-collapse: collapse; font-size: .9rem; }
+  td, th { text-align:left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<main>
+  <h1>UTM Builder</h1>
+  <p class="sub">Builds a campaign link with consistent naming, so GA4 reports group traffic correctly.</p>
+
+  <div class="card">
+    <label for="url">Landing page URL</label>
+    <input id="url" value="https://example.com/webinars/fp-and-a-modernization">
+    <div class="row">
+      <div><label for="source">utm_source</label>
+        <select id="source"><option>linkedin</option><option>google</option><option>reddit</option><option>pardot</option><option>partner</option></select></div>
+      <div><label for="medium">utm_medium</label>
+        <select id="medium"><option>paid-social</option><option>organic-social</option><option>cpc</option><option>email</option><option>referral</option></select></div>
+    </div>
+    <label for="campaign">utm_campaign (yyyy-mm_topic)</label>
+    <input id="campaign" value="2026-12_FP&A Modernization Webinar">
+    <div class="row">
+      <div><label for="content">utm_content (creative / email step)</label><input id="content" value="invite-1"></div>
+      <div><label for="term">utm_term (keyword, paid search only)</label><input id="term" value=""></div>
+    </div>
+    <button id="copy" type="button">Copy link</button>
+  </div>
+
+  <div class="card">
+    <strong>Tagged link</strong>
+    <div id="out" aria-live="polite"></div>
+    <ul id="checks"></ul>
+  </div>
+
+  <div class="card">
+    <strong>Naming rules applied</strong>
+    <table>
+      <tr><th>Rule</th><th>Why</th></tr>
+      <tr><td>Lowercase, hyphens, no spaces</td><td>GA4 treats <code>LinkedIn</code> and <code>linkedin</code> as different sources</td></tr>
+      <tr><td>Fixed source and medium lists</td><td>Keeps GA4's default channel grouping accurate</td></tr>
+      <tr><td>Campaign starts with yyyy-mm</td><td>Sorts by date and stays unique across repeat webinars</td></tr>
+      <tr><td><code>utm_term</code> only with <code>cpc</code></td><td>Avoids fake keyword data from social and email</td></tr>
+    </table>
+  </div>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  const clean = s => s.trim().toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  function build() {
+    const checks = [];
+    let url;
+    try { url = new URL($('url').value.trim()); } catch { $('out').textContent = 'Enter a full URL starting with https://'; $('checks').innerHTML = ''; return; }
+    const p = { utm_source: $('source').value, utm_medium: $('medium').value, utm_campaign: clean($('campaign').value), utm_content: clean($('content').value), utm_term: clean($('term').value) };
+    if (!/^\d{4}-\d{2}-/.test(p.utm_campaign)) checks.push(['warn', 'Campaign should start with yyyy-mm']);
+    if (p.utm_term && p.utm_medium !== 'cpc') { checks.push(['warn', 'utm_term removed: only used with cpc']); p.utm_term = ''; }
+    if (url.protocol !== 'https:') checks.push(['warn', 'Use https so the referrer and UTMs survive redirects']);
+    Object.entries(p).forEach(([k, v]) => v ? url.searchParams.set(k, v) : url.searchParams.delete(k));
+    if (!checks.length) checks.push(['ok', 'All naming rules pass']);
+    $('out').textContent = url.toString();
+    $('checks').innerHTML = checks.map(([c, t]) => `<li class="${c}">${t}</li>`).join('');
+  }
+  document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', build));
+  $('copy').addEventListener('click', () => { navigator.clipboard?.writeText($('out').textContent).catch(() => {}); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy link', 1200); });
+  build();
+</script>
+</body>
+</html>
