@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTM Study Coach</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#18202e;--muted:#5d6779;--line:#dde3ec;--accent:#2457c5;--accent-soft:#e8effc;--ok:#18794e;--ok-soft:#e3f4ea;--warn:#a85b00;--warn-soft:#fdf0dc;--rest:#6b4fbb;--rest-soft:#efeafb;--shadow:0 1px 2px rgba(16,24,40,.06),0 4px 16px rgba(16,24,40,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141c;--card:#171d28;--ink:#e6eaf2;--muted:#9aa4b6;--line:#283142;--accent:#7aa5ff;--accent-soft:#1d2a45;--ok:#5ccf91;--ok-soft:#163325;--warn:#f2b15c;--warn-soft:#3a2a14;--rest:#b49cff;--rest-soft:#2a2245;--shadow:none}}
+:root[data-theme="dark"]{--bg:#10141c;--card:#171d28;--ink:#e6eaf2;--muted:#9aa4b6;--line:#283142;--accent:#7aa5ff;--accent-soft:#1d2a45;--ok:#5ccf91;--ok-soft:#163325;--warn:#f2b15c;--warn-soft:#3a2a14;--rest:#b49cff;--rest-soft:#2a2245;--shadow:none}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+h1{font-size:1.55rem;margin:0}
+.sub{color:var(--muted);margin:2px 0 0}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+button:hover,.btn:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.big{padding:12px 22px;font-size:1.05rem}
+button.ghost{background:transparent}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:1.5rem;line-height:1.2}
+.stat span{color:var(--muted);font-size:.85rem}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.coach{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--accent-soft);margin-bottom:16px}
+.coach .who{font-size:1.4rem;line-height:1}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{font-size:.78rem;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.rest{background:var(--rest-soft);color:var(--rest)}
+.mission h2{margin:2px 0 6px;font-size:1.35rem}
+.mission .task{font-size:1.05rem;margin:8px 0 12px}
+.doneWhen{color:var(--muted);margin:0 0 14px}
+.doneWhen b{color:var(--ink)}
+.q{border-left:3px solid var(--accent);padding:6px 12px;margin:0 0 14px;background:var(--accent-soft);border-radius:0 8px 8px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.timer{font-variant-numeric:tabular-nums;font-size:1.7rem;font-weight:700;min-width:96px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.wk{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--card)}
+.wk.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.wk small{color:var(--muted);display:block}
+.wk .t{font-weight:600;font-size:.9rem;margin:2px 0 6px}
+h3{margin:0 0 12px;font-size:1.05rem}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.item.done{opacity:.72}
+.item .top{display:flex;gap:10px;align-items:center;cursor:pointer;flex-wrap:wrap}
+.item .date{color:var(--muted);font-size:.85rem;min-width:92px}
+.item .f{font-weight:600;flex:1;min-width:160px}
+.item .body{display:none;margin-top:8px;color:var(--ink)}
+.item.open .body{display:block}
+.tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;flex:none}
+.done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.log .entry{border-bottom:1px solid var(--line);padding:10px 0}
+.log .entry:last-child{border:0}
+.log .meta{color:var(--muted);font-size:.85rem}
+dialog{border:1px solid var(--line);border-radius:14px;padding:0;background:var(--card);color:var(--ink);width:min(560px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(10,14,22,.5)}
+dialog form{padding:20px}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:.92rem}
+textarea{width:100%;min-height:80px;font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.hint{color:var(--muted);font-size:.85rem}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1}
+input[type=file]{display:none}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>GTM Study Coach</h1>
+      <p class="sub" id="todayLabel"></p>
+    </div>
+    <div class="tools">
+      <label class="btn" for="fileIn" title="Load the plan and progress from your Excel file">📂 Load Excel</label>
+      <input type="file" id="fileIn" accept=".xlsx,.xls">
+      <button id="exportBtn" title="Save your progress back into an Excel file">💾 Save to Excel</button>
+      <button id="themeBtn" class="ghost" title="Switch light or dark">🌓</button>
+    </div>
+  </header>
+
+  <div class="coach" id="coach"><div class="who">🧭</div><div id="coachMsg"></div></div>
+
+  <div class="stats">
+    <div class="stat"><b id="sDone">0</b><span>sessions done</span></div>
+    <div class="stat"><b id="sStreak">0</b><span>day streak</span></div>
+    <div class="stat"><b id="sWeek">0</b><span>current week</span></div>
+    <div class="stat"><b id="sPct">0%</b><span>of the plan</span><div class="bar" style="margin-top:6px"><i id="pctBar" style="width:0"></i></div></div>
+  </div>
+
+  <section class="card mission" id="mission"></section>
+
+  <section class="card">
+    <h3>Weeks</h3>
+    <div class="weeks" id="weeks"></div>
+  </section>
+
+  <section class="card">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="plan">Full plan</button>
+      <button role="tab" aria-selected="false" data-tab="log">My report log</button>
+    </div>
+    <div id="tab-plan" class="list"></div>
+    <div id="tab-log" class="log" hidden></div>
+  </section>
+
+  <p class="hint">Progress is saved in this browser. Click <b>Save to Excel</b> at the end of each week to keep a copy in your Excel file. If you edit the plan in Excel, use <b>Load Excel</b> to bring the changes in.</p>
+</main>
+
+<dialog id="doneDlg">
+  <form method="dialog" id="doneForm">
+    <h3 id="dlgTitle">Report to your coach</h3>
+    <label for="noteIn">What did you do, and where did you get stuck?</label>
+    <textarea id="noteIn" required placeholder="One or two lines is enough."></textarea>
+    <div id="qWrap" hidden>
+      <label for="ansIn" id="qLabel">Explain it</label>
+      <textarea id="ansIn" placeholder="3-4 plain sentences, as if to a new hire."></textarea>
+    </div>
+    <div class="row" style="margin-top:16px;justify-content:flex-end">
+      <button value="cancel" formnovalidate class="ghost">Cancel</button>
+      <button value="ok" class="primary">Mark done ✓</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_PLAN = [ {"d":"2026-11-25","w":0,"wk":"Orientation","type":"Setup","focus":"What GTM engineering is","task":"Open this page and the Excel file. Read one article on what a GTM engineer does (Clay's blog has several). Write 3 lines in the note: what the role is, what you already do, what you don't do yet.","done":"3-line note saved","link":"https://www.clay.com/blog"}, {"d":"2026-11-26","w":0,"wk":"Orientation","type":"Learn","focus":"Funnel stages refresher","task":"Write the stages a webinar lead goes through at work (registered, attended, MQL, SQL, opportunity, customer). For each stage, note who owns it and which tool holds the data.","done":"Stage list with owner and tool","link":""}, {"d":"2026-11-27","w":0,"wk":"Orientation","type":"Ship","focus":"Map your current GTM stack","task":"Draw your stack as a simple flow: Zoom, Pardot, Salesforce, GA4, Search Console, LinkedIn. Circle 3 manual handoffs you'd automate first. Save it as stack-map.md (keep it private, it's about work).","done":"stack-map.md with 3 handoffs circled","link":"","q":"Which 3 handoffs in your stack waste the most time, and why?"}, {"d":"2026-11-30","w":1,"wk":"Make: automation basics","type":"Learn","focus":"Automation design","task":"Do the first Make Academy lessons (Basics). Concept: triggers vs actions, webhooks, filters and routers, what happens when a step fails.","done":"Notes on 5 terms in your own words","link":"https://academy.make.com/"}, {"d":"2026-12-01","w":1,"wk":"Make: automation basics","type":"Build","focus":"Trigger","task":"Create a free Make account. Make a Google Form 'Webinar registration' (name, email, company, 'how did you hear about us?'). Build a scenario triggered by new form responses.","done":"Scenario fires on a test response","link":"https://www.make.com/"}, {"d":"2026-12-02","w":1,"wk":"Make: automation basics","type":"Build","focus":"Actions and routing","task":"Add steps: write each registration to a Google Sheet with a timestamp; add a router that emails you when the source is 'LinkedIn'.","done":"Row lands in Sheet and alert email arrives","link":""}, {"d":"2026-12-03","w":1,"wk":"Make: automation basics","type":"Build","focus":"Error handling","task":"Add a filter for missing or badly formatted emails and an error handler. Test with 5 fake registrations, including 2 bad ones.","done":"Bad rows are caught, good rows pass","link":""}, {"d":"2026-12-04","w":1,"wk":"Make: automation basics","type":"Ship","focus":"Workflow #1","task":"Screenshot the scenario. Add demos/make-webinar-registration/README.md to your portfolio: what it does, the steps, what you'd add next. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"What happens if this workflow fails halfway, and how would you know?"}, {"d":"2026-12-07","w":2,"wk":"n8n: APIs and scheduled reports","type":"Learn","focus":"APIs for marketers","task":"Start the n8n Level 1 course. Concept: REST, API keys vs OAuth, JSON, pagination, rate limits, scheduled vs event-driven.","done":"Notes on 5 API terms","link":"https://docs.n8n.io/courses/"}, {"d":"2026-12-08","w":2,"wk":"n8n: APIs and scheduled reports","type":"Build","focus":"Schedule + GA4","task":"Start an n8n cloud trial. Add a Schedule trigger (Mondays 9 am) and a Google Analytics node. Use the public GA4 demo account (Google Merchandise Store), not work data.","done":"GA4 node returns data","link":"https://support.google.com/analytics/answer/6367342"}, {"d":"2026-12-09","w":2,"wk":"n8n: APIs and scheduled reports","type":"Build","focus":"Shape the data","task":"Pull last 7 days of sessions and conversions by channel. Use a Set or Code node to tidy the fields.","done":"Clean table of channels and numbers","link":""}, {"d":"2026-12-10","w":2,"wk":"n8n: APIs and scheduled reports","type":"Build","focus":"Send the summary","task":"Add the previous 7 days for a week-over-week change. Send a short email summary to yourself.","done":"Summary email in your inbox","link":""}, {"d":"2026-12-11","w":2,"wk":"n8n: APIs and scheduled reports","type":"Ship","focus":"Workflow #2","task":"Export the workflow JSON (remove credentials), screenshot it, add a README in your portfolio demos folder. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"How does your weekly GA4 email get its data, step by step?"}, {"d":"2026-12-14","w":3,"wk":"Apollo: ICP and segmentation","type":"Learn","focus":"ICP, personas, buying committee","task":"Apollo Academy intro. Concept: ICP (company fit) vs persona (person), firmographics, technographics, buying roles (champion, economic buyer, blocker).","done":"Definitions in your own words","link":"https://www.apollo.io/academy"}, {"d":"2026-12-15","w":3,"wk":"Apollo: ICP and segmentation","type":"Build","focus":"Write the ICP","task":"On paper first: ICP for a planning product on Power BI and Fabric. Industry, company size, region, tech used, trigger events.","done":"One-page ICP","link":""}, {"d":"2026-12-16","w":3,"wk":"Apollo: ICP and segmentation","type":"Build","focus":"Persona searches","task":"Free Apollo account. Build saved searches for 3 personas: FP&A leader, BI or analytics lead, data engineer. Note the result counts.","done":"3 saved searches with counts","link":"https://www.apollo.io/"}, {"d":"2026-12-17","w":3,"wk":"Apollo: ICP and segmentation","type":"Build","focus":"Refine","task":"Tighten filters (seniority, company size, technology). Map each persona to a buying role. Note what changed the counts most.","done":"Refined counts + role map","link":""}, {"d":"2026-12-18","w":3,"wk":"Apollo: ICP and segmentation","type":"Ship","focus":"Segmentation write-up","task":"Write up the filters and logic with screenshots of filters only. No names, emails or contact rows. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"Who buys a planning product, who uses it, and who can block it?"}, {"d":"2026-12-21","w":4,"wk":"Clay: enrichment and signals","type":"Learn","focus":"Enrichment and buying signals","task":"Clay University intro. Concept: enrichment from several sources in turn, deduping, lead-to-account matching, signals (job changes, hiring, tech used, site visits).","done":"List of 5 signals you'd track","link":"https://www.clay.com/university"}, {"d":"2026-12-22","w":4,"wk":"Clay: enrichment and signals","type":"Build","focus":"Build the table","task":"Clay table of 25 public companies (for example from public Power BI customer stories). Add enrichment columns: industry, size, HQ.","done":"25 rows enriched","link":"https://www.clay.com/"}, {"d":"2026-12-23","w":4,"wk":"Clay: enrichment and signals","type":"Build","focus":"AI research column","task":"Add an AI column: 'Does this company mention Power BI or Microsoft Fabric publicly?' Check 5 answers by hand and note how many were right.","done":"AI column + accuracy note","link":""}, {"d":"2026-12-24","w":4,"wk":"Clay: enrichment and signals","type":"Ship","focus":"Enrichment demo","task":"Screenshot the table (company data only). Write how it applies your enrichment spec. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"Which 3 signals would tell you an account is ready to talk, and why?"}, {"d":"2026-12-25","w":4,"wk":"Clay: enrichment and signals","type":"Rest","focus":"Holiday","task":"Rest. If you're behind, use it to catch up one session. Otherwise enjoy the day.","done":"","link":""}, {"d":"2026-12-28","w":5,"wk":"SQL: attribution","type":"Learn","focus":"Attribution models","task":"Concept: first-touch, last-touch, linear, position-based; why multi-touch has limits; self-reported attribution; holdout tests. Set up the BigQuery sandbox and open the public GA4 sample dataset.","done":"Sandbox open + model notes","link":"https://developers.google.com/analytics/bigquery/web-ecommerce-demo-dataset"}, {"d":"2026-12-29","w":5,"wk":"SQL: attribution","type":"Build","focus":"Sessions by source","task":"Write SQL for sessions by source, medium and campaign (you'll need UNNEST on event_params).","done":"Query returns a channel table","link":"https://cloud.google.com/bigquery/docs/sandbox"}, {"d":"2026-12-30","w":5,"wk":"SQL: attribution","type":"Build","focus":"First vs last touch","task":"Count purchases by first-touch source (traffic_source) and by the session's source. Compare the two rankings.","done":"Side-by-side comparison","link":""}, {"d":"2026-12-31","w":5,"wk":"SQL: attribution","type":"Ship","focus":"Attribution queries","task":"Save the queries as a .sql file with comments and a short write-up next to your UTM demo. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"Why can't last-click tell you whether the Reddit ads worked, and what would?"}, {"d":"2027-01-01","w":5,"wk":"SQL: attribution","type":"Rest","focus":"Holiday","task":"Happy New Year. Rest, or catch up one session if you're behind.","done":"","link":""}, {"d":"2027-01-04","w":6,"wk":"Node.js + Strapi: headless CMS","type":"Learn","focus":"Headless CMS","task":"Install Node.js LTS (ask IT if you need admin rights) and check node -v. Concept: headless vs traditional CMS, structured content, why marketers care.","done":"node -v works + notes","link":"https://nodejs.org/"}, {"d":"2027-01-05","w":6,"wk":"Node.js + Strapi: headless CMS","type":"Build","focus":"Strapi quickstart","task":"Follow the Strapi quick start to create a local project and admin user.","done":"Strapi admin opens locally","link":"https://docs.strapi.io/"}, {"d":"2027-01-06","w":6,"wk":"Node.js + Strapi: headless CMS","type":"Build","focus":"Webinar content type","task":"Create a 'Webinar' content type (title, date, speaker, abstract, registration URL). Add 3 entries, publish them, allow public read on the API.","done":"/api/webinars returns 3 items","link":""}, {"d":"2027-01-07","w":6,"wk":"Node.js + Strapi: headless CMS","type":"Build","focus":"Show it on a page","task":"Write a small HTML page that fetches /api/webinars and lists them with dates and register buttons.","done":"Page lists the webinars","link":""}, {"d":"2027-01-08","w":6,"wk":"Node.js + Strapi: headless CMS","type":"Ship","focus":"Headless CMS demo","task":"Screenshots + the HTML page in your portfolio demos folder with a README. Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"Why would a marketing team move to a headless CMS, and what does it cost them?"}, {"d":"2027-01-11","w":7,"wk":"AI creative + positioning","type":"Learn","focus":"Positioning","task":"Canva Design School: Magic Design and Brand Kit. Concept: positioning (competitive alternatives, unique value, best-fit customer) from Obviously Awesome.","done":"Notes on the positioning steps","link":"https://www.canva.com/designschool/"}, {"d":"2027-01-12","w":7,"wk":"AI creative + positioning","type":"Build","focus":"Canva remake","task":"Pick a past published campaign. Recreate its banner and LinkedIn image in Canva using a brand kit.","done":"2 Canva creatives","link":"https://www.canva.com/"}, {"d":"2027-01-13","w":7,"wk":"AI creative + positioning","type":"Build","focus":"Firefly","task":"Use Adobe Firefly for background or illustration variations. Save your prompts and note which ones worked.","done":"3 variations + prompt notes","link":"https://firefly.adobe.com/"}, {"d":"2027-01-14","w":7,"wk":"AI creative + positioning","type":"Build","focus":"Compare + position","task":"Compare code-generated vs Canva/Firefly creative: speed, brand fit, editability. Then write Fabric Planning's positioning in 4 lines without the product name.","done":"Comparison table + 4 lines","link":""}, {"d":"2027-01-15","w":7,"wk":"AI creative + positioning","type":"Ship","focus":"Creative comparison","task":"Add the before/after comparison to your portfolio (published creative only). Commit and push.","done":"Pushed to GitHub","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"Write the positioning in 4 lines. When would you use AI tools vs code for creative?"}, {"d":"2027-01-18","w":8,"wk":"Capstone: end-to-end GTM flow","type":"Learn","focus":"Funnel and SaaS metrics","task":"Concept: lifecycle stages, conversion rates, pipeline velocity, CAC, payback, LTV, ARR, NRR, churn. Draw your capstone flow: list, automation, email with UTMs, GA4, dashboard.","done":"Metric notes + flow diagram","link":"https://www.growthunhinged.com/"}, {"d":"2027-01-19","w":8,"wk":"Capstone: end-to-end GTM flow","type":"Build","focus":"List to CRM","task":"Take a made-up or public-company list (from week 3-4) into n8n or Make and write it to a Google Sheet acting as your CRM, with a lifecycle stage column.","done":"List lands in the 'CRM' sheet","link":""}, {"d":"2027-01-20","w":8,"wk":"Capstone: end-to-end GTM flow","type":"Build","focus":"Email + tracking","task":"Add GA4 to your GitHub Pages site (personal property). Send yourself an email with UTM links to it. Check the visits show up in GA4 Realtime.","done":"UTM visits visible in GA4","link":"https://juliekirubaj.github.io/JuliekirubaJ/demos/utm-attribution/"}, {"d":"2027-01-21","w":8,"wk":"Capstone: end-to-end GTM flow","type":"Build","focus":"Dashboard","task":"Build a simple dashboard (Looker Studio or Power BI): list size, stage counts, clicks by campaign.","done":"One-page dashboard","link":""}, {"d":"2027-01-22","w":8,"wk":"Capstone: end-to-end GTM flow","type":"Ship","focus":"Case study #11","task":"Write the capstone case study. Move the tools you've now demonstrated from LEARNING.md into your toolkit and resume. Commit and push.","done":"Case study + resume updated","link":"https://github.com/JuliekirubaJ/JuliekirubaJ","q":"If webinar registrations double but pipeline doesn't move, where would you look?"}, {"d":"2027-01-25","w":9,"wk":"Credential + deliverability","type":"Learn","focus":"GA4 certification","task":"Start the Google Analytics certification on Skillshop.","done":"First module done","link":"https://skillshop.withgoogle.com/"}, {"d":"2027-01-26","w":9,"wk":"Credential + deliverability","type":"Learn","focus":"GA4 certification","task":"Continue the GA4 certification modules.","done":"Modules progressed","link":"https://skillshop.withgoogle.com/"}, {"d":"2027-01-27","w":9,"wk":"Credential + deliverability","type":"Learn","focus":"GA4 certification","task":"Finish the modules and take the assessment.","done":"Certificate earned","link":"https://skillshop.withgoogle.com/"}, {"d":"2027-01-28","w":9,"wk":"Credential + deliverability","type":"Learn","focus":"Email deliverability theory","task":"Read Google's email sender guidelines. Concept: SPF, DKIM, DMARC, spam-rate limits, one-click unsubscribe. Link each to your deliverability case study.","done":"Notes linked to case study 3","link":"https://support.google.com/a/answer/81126"}, {"d":"2027-01-29","w":9,"wk":"Credential + deliverability","type":"Ship","focus":"Update everything","task":"Add the GA4 certificate to your resume and LinkedIn. Add a 'Theory' section to case study 3. Plan your next 8 weeks.","done":"Resume, LinkedIn and case study updated","link":"https://www.linkedin.com/in/juliekiruba-j/","q":"Explain SPF, DKIM and DMARC to a new hire in 4 sentences."} ] ;
+const KEY = 'gtm-study-coach-v1';
+const $ = id => document.getElementById(id);
+
+/* ---------- storage ---------- */
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+let state = load();
+state.done = state.done || {};
+let plan = (state.plan && state.plan.length) ? state.plan : DEFAULT_PLAN.map((r,i)=>({...r,id:i+1}));
+
+/* ---------- dates ---------- */
+const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); };
+const todayISO = () => iso(new Date());
+const fmt = s => new Date(s+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+const isWeekend = s => { const g = new Date(s+'T00:00:00').getDay(); return g===0||g===6; };
+
+/* ---------- logic ---------- */
+const workRows = () => plan.filter(r => r.type !== 'Rest');
+const isDone = r => !!state.done[r.id];
+const nextTask = () => workRows().find(r => !isDone(r));
+const doneToday = () => Object.values(state.done).some(v => v.date === todayISO());
+const planned = () => plan.find(r => r.d === todayISO());
+const behindCount = () => workRows().filter(r => !isDone(r) && r.d < todayISO()).length;
+
+function streak(){
+  const doneDates = new Set(Object.values(state.done).map(v=>v.date));
+  const restDates = new Set(plan.filter(r=>r.type==='Rest').map(r=>r.d));
+  let n = 0, d = new Date();
+  for (let i=0;i<400;i++){
+    const s = iso(d);
+    if (doneDates.has(s)) n++;
+    else if (!(isWeekend(s) || restDates.has(s) || (i===0))) break;
+    d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+
+function coachMessage(){
+  const nt = nextTask(), b = behindCount(), st = streak(), p = planned();
+  if (!nt) return `<b>You finished the whole plan.</b> Every tool on your learning log now has a demo. Update your resume, then plan the next 8 weeks.`;
+  if (doneToday()) return `<b>Done for today. Nice work.</b> ${st>1?`That's ${st} days in a row. `:''}Tomorrow: <i>${nt.focus}</i>. Rest now, the plan works because it's small.`;
+  if (p && p.type==='Rest' && b===0) return `<b>Rest day.</b> You're on track, so take the day off. Back tomorrow with <i>${nt.focus}</i>.`;
+  if (isWeekend(todayISO()) && b===0) return `<b>It's the weekend and you're on track.</b> No session needed. If you want to read, try a newsletter from the plan.`;
+  if (b===0) return `<b>Today's 30 minutes:</b> ${nt.focus}. Start the timer, do just this one thing, then tell me how it went.`;
+  if (b<=2) return `<b>You're ${b} session${b>1?'s':''} behind. That's fine.</b> Don't double up. Do this one session today and the plan shifts with you.`;
+  return `<b>You're ${b} sessions behind.</b> No catch-up marathons. One 30-minute session today restarts the habit, and that matters more than the dates.`;
+}
+
+/* ---------- render ---------- */
+function typeChip(t){ const c = t==='Ship'?'ok':t==='Rest'?'rest':t==='Build'?'':'' ; return `<span class="chip ${c}">${t}</span>`; }
+function esc(s){ return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderMission(){
+  const el = $('mission'), nt = nextTask();
+  if (!nt){ el.innerHTML = `<h2>🎉 Plan complete</h2><p>All ${workRows().length} sessions done. Save to Excel to keep the record.</p>`; return; }
+  const today = todayISO(), b = behindCount();
+  const status = doneToday() ? `<span class="chip ok">Done today</span>` : nt.d < today ? `<span class="chip warn">Planned ${fmt(nt.d)}</span>` : nt.d > today ? `<span class="chip">Ahead: planned ${fmt(nt.d)}</span>` : `<span class="chip ok">Planned for today</span>`;
+  el.innerHTML = `
+    <div class="chips">${typeChip(nt.type)}<span class="chip">Week ${nt.w} · ${esc(nt.wk)}</span>${status}<span class="chip">Session ${workRows().indexOf(nt)+1} of ${workRows().length}</span></div>
+    <h2>${doneToday() ? 'Up next: ' : ''}${esc(nt.focus)}</h2>
+    <p class="task">${esc(nt.task)}</p>
+    <p class="doneWhen">Done when: <b>${esc(nt.done)}</b></p>
+    ${nt.q ? `<p class="q"><b>Friday "explain it":</b> ${esc(nt.q)}</p>` : ''}
+    <div class="row">
+      <span class="timer" id="timer">30:00</span>
+      <button id="tStart">▶ Start 30 min</button>
+      <button id="tReset" class="ghost">Reset</button>
+      ${nt.link ? `<a class="btn" href="${esc(nt.link)}" target="_blank" rel="noopener">Open resource ↗</a>` : ''}
+      <span style="flex:1"></span>
+      <button class="primary big" id="doneBtn">I'm done ✓</button>
+    </div>`;
+  $('doneBtn').onclick = () => openDone(nt);
+  bindTimer();
+}
+
+function renderStats(){
+  const w = workRows(), d = w.filter(isDone).length, nt = nextTask();
+  $('sDone').textContent = `${d}/${w.length}`;
+  $('sStreak').textContent = streak();
+  $('sWeek').textContent = nt ? nt.w : '✓';
+  const pct = Math.round(d / w.length * 100);
+  $('sPct').textContent = pct + '%'; $('pctBar').style.width = pct + '%';
+  $('coachMsg').innerHTML = coachMessage();
+  $('todayLabel').textContent = new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' · 30 minutes a day after work';
+}
+
+function renderWeeks(){
+  const nt = nextTask(), weeks = [...new Set(plan.map(r=>r.w))];
+  $('weeks').innerHTML = weeks.map(w => {
+    const rows = plan.filter(r=>r.w===w && r.type!=='Rest'), d = rows.filter(isDone).length, title = plan.find(r=>r.w===w).wk;
+    return `<div class="wk ${nt && nt.w===w?'cur':''}" data-w="${w}"><small>Week ${w} · ${fmt(plan.find(r=>r.w===w).d)}</small><div class="t">${esc(title)}</div><div class="bar"><i style="width:${rows.length?d/rows.length*100:0}%"></i></div><small>${d}/${rows.length} done</small></div>`;
+  }).join('');
+  document.querySelectorAll('.wk').forEach(el => el.onclick = () => {
+    const first = document.querySelector(`.item[data-w="${el.dataset.w}"]`); if (first) first.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
+
+function renderPlan(){
+  const nt = nextTask();
+  $('tab-plan').innerHTML = plan.map(r => {
+    const dn = state.done[r.id];
+    return `<div class="item ${dn?'done':''} ${nt&&nt.id===r.id?'open':''}" data-id="${r.id}" data-w="${r.w}">
+      <div class="top"><span class="tick">${dn?'✓':''}</span><span class="date">${fmt(r.d)}</span>${typeChip(r.type)}<span class="f">${esc(r.focus)}</span><span class="hint">Week ${r.w}</span></div>
+      <div class="body"><p style="margin:0 0 6px">${esc(r.task)}</p>
+        ${r.done?`<p class="hint" style="margin:0 0 6px">Done when: ${esc(r.done)}</p>`:''}
+        ${r.q?`<p class="q">${esc(r.q)}</p>`:''}
+        ${dn?`<p class="hint">Reported ${fmt(dn.date)}: ${esc(dn.note)}</p>`:''}
+        ${r.type!=='Rest'?`<div class="row">${r.link?`<a class="btn" href="${esc(r.link)}" target="_blank" rel="noopener">Resource ↗</a>`:''}${dn?`<button data-undo="${r.id}" class="ghost">Undo</button>`:`<button data-do="${r.id}">Mark done</button>`}</div>`:''}
+      </div></div>`;
+  }).join('');
+  document.querySelectorAll('.item .top').forEach(t => t.onclick = () => t.parentElement.classList.toggle('open'));
+  document.querySelectorAll('[data-do]').forEach(b => b.onclick = () => openDone(plan.find(r=>r.id==b.dataset.do)));
+  document.querySelectorAll('[data-undo]').forEach(b => b.onclick = () => { delete state.done[b.dataset.undo]; save(); render(); toast('Marked as not done'); });
+}
+
+function renderLog(){
+  const entries = plan.filter(isDone).map(r=>({r, v:state.done[r.id]})).sort((a,b)=> (b.v.ts||0)-(a.v.ts||0));
+  $('tab-log').innerHTML = entries.length ? entries.map(({r,v}) => `<div class="entry"><div class="meta">${fmt(v.date)} · Week ${r.w} · ${esc(r.focus)}</div><div>${esc(v.note)}</div>${v.answer?`<div class="q" style="margin-top:6px"><b>Explain it:</b> ${esc(v.answer)}</div>`:''}</div>`).join('') : `<p class="hint">Your reports will show up here after your first session.</p>`;
+}
+
+function render(){ renderStats(); renderMission(); renderWeeks(); renderPlan(); renderLog(); }
+
+/* ---------- done dialog ---------- */
+let dlgRow = null;
+function openDone(r){
+  dlgRow = r; $('dlgTitle').textContent = `Report: ${r.focus}`;
+  $('noteIn').value = ''; $('ansIn').value = '';
+  $('qWrap').hidden = !r.q; if (r.q) $('qLabel').textContent = 'Explain it: ' + r.q;
+  try { $('doneDlg').showModal(); } catch { $('doneDlg').setAttribute('open',''); }
+}
+$('doneDlg').addEventListener('close', () => {
+  if ($('doneDlg').returnValue !== 'ok' || !dlgRow) return;
+  state.done[dlgRow.id] = { date: todayISO(), note: $('noteIn').value.trim(), answer: $('ansIn').value.trim(), ts: Date.now() };
+  save(); stopTimer(); render();
+  const nt = nextTask();
+  toast(nt ? `Logged. Next up: ${nt.focus}` : 'Logged. That was the last session!');
+});
+
+/* ---------- timer ---------- */
+let tLeft = 1800, tInt = null;
+function drawTimer(){ const el = $('timer'); if (el) el.textContent = `${String(Math.floor(tLeft/60)).padStart(2,'0')}:${String(tLeft%60).padStart(2,'0')}`; }
+function stopTimer(){ clearInterval(tInt); tInt = null; document.title = 'GTM Study Coach'; }
+function chime(){ try { const a = new (window.AudioContext||window.webkitAudioContext)(); [0,0.25,0.5].forEach(t=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.value=660+t*400; o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.15,a.currentTime+t); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.22); o.start(a.currentTime+t); o.stop(a.currentTime+t+.25); }); } catch {} }
+function bindTimer(){
+  drawTimer();
+  const s = $('tStart'); if (!s) return;
+  s.textContent = tInt ? '⏸ Pause' : (tLeft<1800 ? '▶ Resume' : '▶ Start 30 min');
+  s.onclick = () => {
+    if (tInt){ stopTimer(); s.textContent = '▶ Resume'; return; }
+    s.textContent = '⏸ Pause';
+    tInt = setInterval(() => {
+      tLeft = Math.max(0, tLeft-1); drawTimer(); document.title = `${$('timer').textContent} · GTM Study Coach`;
+      if (tLeft===0){ stopTimer(); chime(); toast("Time's up. Wrap up and tell me how it went."); const b=$('tStart'); if(b) b.textContent='▶ Start 30 min'; tLeft=1800; }
+    }, 1000);
+  };
+  $('tReset').onclick = () => { stopTimer(); tLeft = 1800; drawTimer(); $('tStart').textContent = '▶ Start 30 min'; };
+}
+
+/* ---------- Excel ---------- */
+const COLS = ['Day','Date','Week','Week Title','Type','Focus','Task','Done When','Resource','Explain It','Status','Done Date','My Report','Explain Answer'];
+function toRows(){
+  return plan.map(r => { const v = state.done[r.id];
+    return { 'Day':r.id,'Date':r.d,'Week':r.w,'Week Title':r.wk,'Type':r.type,'Focus':r.focus,'Task':r.task,'Done When':r.done||'','Resource':r.link||'','Explain It':r.q||'',
+      'Status': r.type==='Rest' ? 'Rest' : (v?'Done':'Not started'), 'Done Date': v?v.date:'', 'My Report': v?v.note:'', 'Explain Answer': v?(v.answer||''):'' }; });
+}
+$('exportBtn').onclick = () => {
+  const rows = toRows();
+  if (window.XLSX){
+    const ws = XLSX.utils.json_to_sheet(rows, {header:COLS});
+    ws['!cols'] = [6,11,6,26,8,26,70,30,34,40,11,11,50,50].map(w=>({wch:w}));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Plan');
+    XLSX.writeFile(wb, 'GTM Study Plan.xlsx');
+    toast('Saved. Replace your old Excel file with this download.');
+  } else {
+    const csv = [COLS.join(',')].concat(rows.map(r=>COLS.map(c=>`"${String(r[c]).replace(/"/g,'""')}"`).join(','))).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'})); a.download='GTM Study Plan.csv'; a.click();
+    toast('Offline, so saved as CSV. Excel opens it fine.');
+  }
+};
+function cellDate(v){
+  if (v instanceof Date) return iso(v);
+  if (typeof v === 'number' && window.XLSX){ const p = XLSX.SSF.parse_date_code(v); return `${p.y}-${String(p.m).padStart(2,'0')}-${String(p.d).padStart(2,'0')}`; }
+  const s = String(v||'').trim(); const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0];
+  const d = new Date(s); return isNaN(d) ? '' : iso(d);
+}
+$('fileIn').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (!window.XLSX){ toast('Loading Excel needs an internet connection the first time.'); return; }
+  try {
+    const wb = XLSX.read(await f.arrayBuffer(), {cellDates:true});
+    const ws = wb.Sheets['Plan'] || wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+    if (!rows.length || !('Task' in rows[0])) throw new Error('No "Plan" sheet with a Task column');
+    const newPlan = [], newDone = {};
+    rows.forEach((x,i) => {
+      const id = Number(x['Day']) || i+1, d = cellDate(x['Date']); if (!d || !x['Task']) return;
+      newPlan.push({ id, d, w:Number(x['Week'])||0, wk:x['Week Title'], type:x['Type']||'Learn', focus:x['Focus'], task:x['Task'], done:x['Done When'], link:x['Resource'], q:x['Explain It'] });
+      if (String(x['Status']).toLowerCase()==='done') newDone[id] = { date: cellDate(x['Done Date']) || todayISO(), note: String(x['My Report']||''), answer: String(x['Explain Answer']||''), ts: Date.parse(cellDate(x['Done Date'])||0)||0 };
+    });
+    plan = newPlan.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.id-b.id);
+    // keep anything marked done here that Excel doesn't know about yet
+    Object.entries(state.done).forEach(([k,v]) => { if (!newDone[k] && plan.some(r=>r.id==k)) newDone[k]=v; });
+    state.plan = plan; state.done = newDone; save(); render();
+    toast(`Loaded ${plan.length} days from ${f.name}`);
+  } catch(err){ toast('Could not read that file: ' + err.message); }
+};
+
+/* ---------- misc ---------- */
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),3200); }
+document.querySelectorAll('[role=tab]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected', x===b));
+  $('tab-plan').hidden = b.dataset.tab!=='plan'; $('tab-log').hidden = b.dataset.tab!=='log';
+});
+$('themeBtn').onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem(KEY+'-theme', document.documentElement.dataset.theme); } catch {}
+};
+try { const th = localStorage.getItem(KEY+'-theme'); if (th) document.documentElement.dataset.theme = th; } catch {}
+render();
+setInterval(() => { if (!tInt) renderStats(); }, 60000);
+</script>
+</body>
+</html>

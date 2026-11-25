@@ -2,6 +2,8 @@
 
 Tools I'm learning now. They are **not** on my resume until there's a working example here to show.
 
+I work through them 30 minutes a day using my [study coach](https://juliekirubaj.github.io/JuliekirubaJ/study-plan/) ([plan as Excel](study-plan/GTM%20Study%20Plan.xlsx)).
+
 | Tool / skill | Goal | Proof I'll add | Status |
 |---|---|---|---|
 | Clay | Enrichment and automated prospecting | Enrich a sample list against my [enrichment spec](case-studies/07-lead-segmentation.md) | Not started |
