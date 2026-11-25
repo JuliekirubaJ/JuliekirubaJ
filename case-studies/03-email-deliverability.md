@@ -8,7 +8,7 @@ Webinar email open rates fell by about half in one month across two brands that 
 ## What I did
 - Pulled six months of send-level data and lined up opens, click-to-open, hard bounces and opt-outs for each send.
 - Click-to-open held steady, so people who opened still engaged. Content was not the cause.
-- Found the break point: a large import of **product-engagement contacts** (people who had used a product, not people who had agreed to marketing email) merged into the master list. Sends to that segment hit hard-bounce rates of 6–10% and a spike in opt-outs within one week, which hurt sender reputation for every later send.
+- Found the break point: a large import of **product-engagement contacts** (people who had used a product, not people who had agreed to marketing email) merged into the master list. Sends to that segment hit hard-bounce rates of 6-10% and a spike in opt-outs within one week, which hurt sender reputation for every later send.
 - Confirmed that suppression of non-openers was already in place, so the fix had to happen upstream, at import.
 
 ## Outcome

@@ -4,7 +4,7 @@
 
 I'm a B2B SaaS product marketer who understands the technology and builds the systems that make campaigns work.
 
-At [Lumel](https://lumel.com) I run product marketing for Microsoft Fabric Planning / Lumel EPM and the Inforiver Power BI visuals: 3–4 webinars a month, Pardot email, LinkedIn and Reddit, paid search and social, SEO, and the reporting that ties it together. Over the past year I've replaced a lot of that manual work with automation: AI agents, API pipelines and code-generated creative. Before marketing I was a Power BI developer and data analyst, so I read the data critically and build the tool when there isn't one.
+At [Lumel](https://lumel.com) I run product marketing for Microsoft Fabric Planning / Lumel EPM and the Inforiver Power BI visuals: 3-4 webinars a month, Pardot email, LinkedIn and Reddit, paid search and social, SEO, and the reporting that ties it together. Over the past year I've replaced a lot of that manual work with automation: AI agents, API pipelines and code-generated creative. Before marketing I was a Power BI developer and data analyst, so I read the data critically and build the tool when there isn't one.
 
 📄 **[Resume (PDF)](resume/Juliekiruba-J-Resume.pdf)** · 💼 [LinkedIn](https://www.linkedin.com/in/) · ✉️ juliekirubaj@gmail.com
 
@@ -42,11 +42,11 @@ Only tools I have used in real work. Things I'm still learning are listed separa
 
 ## Background
 
-- **Lumel** · Product Marketing Analyst · Sep 2024 – present
-- **Finsight Analytics** · Project Manager / Data Analyst · 2023 – 2024: AI invoice processing, Power Automate and Power BI client automation, BI trainer
+- **Lumel** · Product Marketing Analyst · Sep 2024 - present
+- **Finsight Analytics** · Project Manager / Data Analyst · 2023 - 2024: AI invoice processing, Power Automate and Power BI client automation, BI trainer
 - **Larsen & Toubro** · Power BI Developer Intern · 2023
 - **ELGI Equipments** · Business Intelligence Intern · 2022
-- **UT Austin (McCombs)** · PGP, Data Science & Business Analytics · 2024 – 2025
+- **UT Austin (McCombs)** · PGP, Data Science & Business Analytics · 2024 - 2025
 
 ---
 

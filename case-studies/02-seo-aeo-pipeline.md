@@ -1,6 +1,6 @@
 # SEO + AI-Search (AEO) Reporting Pipeline
 
-**Role:** builder and owner · **When:** Sep–Nov 2026 · **Stack:** Google Search Console API, GA4 Data API, OAuth 2.0 (loopback + PKCE), PowerShell, curl, Excel automation, scheduled tasks
+**Role:** builder and owner · **When:** Sep-Nov 2026 · **Stack:** Google Search Console API, GA4 Data API, OAuth 2.0 (loopback + PKCE), PowerShell, curl, Excel automation, scheduled tasks
 
 ## The problem
 Monthly SEO reporting for three websites (corporate site, community site, product site) meant exporting from GA4, Search Console, a web analytics tool, Ahrefs, PageSpeed and a paid crawler, then pasting everything into a workbook. It took days, and nobody tracked how the brands showed up in AI answers.

@@ -1,6 +1,6 @@
 # Code-Generated Creative & Video
 
-**Role:** builder · **When:** Oct–Nov 2026 · **Stack:** HTML/CSS/JavaScript, JSON, headless Microsoft Edge, PowerShell, PowerPoint automation (COM)
+**Role:** builder · **When:** Oct-Nov 2026 · **Stack:** HTML/CSS/JavaScript, JSON, headless Microsoft Edge, PowerShell, PowerPoint automation (COM)
 
 ## Carousel series from data
 A weekly LinkedIn document series explaining charts in Power BI needed 74 posts in one brand style.

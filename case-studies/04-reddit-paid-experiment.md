@@ -1,6 +1,6 @@
 # Reddit Paid Experiment for a Migration Webinar
 
-**Role:** planner and analyst · **When:** Jan–Mar 2026 · **Stack:** Reddit Ads, daily CSV exports, Excel, PowerPoint readout
+**Role:** planner and analyst · **When:** Jan-Mar 2026 · **Stack:** Reddit Ads, daily CSV exports, Excel, PowerPoint readout
 
 ## The question
 Could subreddit-targeted ads bring qualified registrations for a technical webinar about moving reporting and planning to Power BI / Microsoft Fabric, at a cost worth keeping next to LinkedIn and Google Search?
