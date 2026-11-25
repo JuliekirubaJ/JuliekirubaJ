@@ -6,7 +6,7 @@ I'm a B2B SaaS product marketer who understands the technology and builds the sy
 
 At [Lumel](https://lumel.com) I run product marketing for Microsoft Fabric Planning / Lumel EPM and the Inforiver Power BI visuals: 3-4 webinars a month, Pardot email, LinkedIn and Reddit, paid search and social, SEO, and the reporting that ties it together. Over the past year I've replaced a lot of that manual work with automation: AI agents, API pipelines and code-generated creative. Before marketing I was a Power BI developer and data analyst, so I read the data critically and build the tool when there isn't one.
 
-📄 **[Resume (PDF)](resume/Juliekiruba-J-Resume.pdf)** · 💼 [LinkedIn](https://www.linkedin.com/in/) · ✉️ juliekirubaj@gmail.com
+📄 **[Resume (PDF)](resume/Juliekiruba-J-Resume.pdf)** · 💼 [LinkedIn](https://www.linkedin.com/in/juliekiruba-j/) · ✉️ juliekirubaj@gmail.com
 
 ---
 
