@@ -10,6 +10,28 @@ At [Lumel](https://lumel.com) I run product marketing for Microsoft Fabric Plann
 
 ---
 
+## ⭐ Featured: Marketing Agent Team
+
+**[JuliekirubaJ/marketing-agent-team](https://github.com/JuliekirubaJ/marketing-agent-team)** is a complete B2B marketing team that runs inside Claude Code, released (MIT license) as a brand-neutral version of the system I run at work.
+
+<p align="center">
+  <a href="https://github.com/JuliekirubaJ/marketing-agent-team"><img src="https://raw.githubusercontent.com/JuliekirubaJ/marketing-agent-team/main/assets/marketing-agent-office.gif" alt="Pixel-art office: 36 marketing agents at 11 team pods while the orchestrator sends them work" width="720"></a>
+</p>
+
+- **36 specialist agents in 11 categories and 44 playbook skills**, coordinated by a `/marketing` orchestrator
+- **Installs as a Claude Code plugin:** `/plugin marketplace add JuliekirubaJ/marketing-agent-team`
+- **Scheduled automations:** weekly task review, follower tracking, monthly SEO report, weekly ranking + AEO report
+- **Pipelines:** SEO reporting (GSC + GA4 APIs, own crawler), task tracker, creative rendering, video production, docs conversion
+- **Guardrails:** every agent grounds in one `brand/` folder of approved facts, and nothing ships without approval
+
+## Recent work
+
+<p>
+  <img src="assets/carousel-demand-inventory.gif" alt="8-slide LinkedIn webinar carousel built from HTML" width="360">
+  <img src="assets/coverage-explainer.gif" alt="Animated inventory coverage chart explainer" width="288">
+</p>
+<sub>Webinar carousel and animated chart explainer, both generated from code (<a href="case-studies/06-creative-automation.md">how</a>). Chart Shorts: <a href="assets/pie-chart-short.mp4">pie</a> · <a href="assets/waterfall-short.mp4">waterfall</a> (<a href="case-studies/08-ai-video-production.md">how</a>).</sub>
+
 ## What I build
 
 | # | Project | What it does | Stack |
@@ -19,8 +41,11 @@ At [Lumel](https://lumel.com) I run product marketing for Microsoft Fabric Plann
 | 3 | [Email Deliverability Investigation](case-studies/03-email-deliverability.md) | Found why open rates halved across two brands, and changed how new lists get added | Pardot, Excel |
 | 4 | [Reddit Paid Experiment](case-studies/04-reddit-paid-experiment.md) | Subreddit-targeted ads for a webinar, tracked daily, with a test readout | Reddit Ads, CSV tracking |
 | 5 | [Webinar Operations Pipeline](case-studies/05-webinar-ops.md) | Promotion timeline, task generation, Zoom data consolidation, replay and companion pages | Zoom exports, PowerShell, AI agents |
-| 6 | [Code-Generated Creative & Video](case-studies/06-creative-automation.md) | JSON → 74 branded LinkedIn carousels; PowerPoint automation → animated product videos | HTML/CSS/JS, headless Edge, PowerPoint COM |
+| 6 | [Code-Generated Creative](case-studies/06-creative-automation.md) | HTML creatives rendered to PNG, PDF and animated GIF; JSON → 74-post branded LinkedIn series | HTML/CSS/JS, headless Edge, PowerShell |
 | 7 | [Lead Segmentation & Enrichment](case-studies/07-lead-segmentation.md) | Job-title clustering into personas and an enrichment spec for blank CRM fields | Salesforce exports, Excel |
+| 8 | [AI-Assisted Video Production](case-studies/08-ai-video-production.md) | AI picks webinar clips from the transcript; scripts cut vertical Shorts; weekly chart Shorts chosen from Search Console data | Claude Code, PowerShell, PowerPoint automation |
+| 9 | [Marketing Ops Automation](case-studies/09-marketing-ops-automation.md) | 726-task process catalogue, scripted task tracker with backups, auto-generated webinar task sets, Monday review | Claude Code, PowerShell, Excel automation |
+| 10 | [LinkedIn Growth & Social Listening](case-studies/10-social-intelligence.md) | Post analysis on two company pages, an approval-gated growth agent, follower tracking, Reddit voice-of-customer | LinkedIn analytics, Claude Code, Reddit |
 
 ### Working demos in this repo
 
@@ -50,4 +75,4 @@ Only tools I have used in real work. Things I'm still learning are listed separa
 
 ---
 
-<sub>Numbers and screenshots in the case studies are rounded or redacted where they belong to my employer. Code here is written for this portfolio, not copied from company systems.</sub>
+<sub>Numbers in the case studies are rounded or left out where they belong to my employer. Creatives shown were published publicly. The marketing-agent-team repo is brand-neutral and contains no company data.</sub>

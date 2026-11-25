@@ -17,5 +17,24 @@ Monthly SEO reporting for three websites (corporate site, community site, produc
 - Keyword tracking moved from tool spot-checks to 90 days of Search Console data.
 - AI-referral traffic (ChatGPT and other assistants) is now a reported metric, not a guess.
 
+## How it works
+```mermaid
+flowchart LR
+  subgraph Sources
+    GSC[Search Console API]
+    GA4[GA4 Data API]
+    CR[Own site crawler]
+    PSI[PageSpeed / CrUX]
+    AEO[AEO checks + prompt log]
+  end
+  AUTH["OAuth PKCE<br/>read-only"] --> GSC & GA4
+  Sources --> J[report-data.json]
+  J --> M["Monthly workbook per site<br/>+ Improvements sheet"]
+  J --> W["Weekly ranking + AEO tracker<br/>new Rank column each Monday"]
+  SCH["Scheduled: month-end and Monday"] --> Sources
+```
+
+The full pipeline, playbook and setup guide are public in [marketing-agent-team/pipelines/seo-reporting](https://github.com/JuliekirubaJ/marketing-agent-team/tree/main/pipelines/seo-reporting).
+
 ## Try it
 A cut-down version of the AEO check is in [`demos/aeo-tracker`](../demos/aeo-tracker/).
